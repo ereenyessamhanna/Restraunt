@@ -1,13 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
-import {FilterItem} from '../../components';
-import {RestaurantNavProps} from '../../navigators';
-import {styles} from './styles';
-import {getTags} from '../../utilities';
-import {FilterItemType} from '../../components';
+import React, { useEffect } from "react";
+import { FlatList, ScrollView, Text, View } from "react-native";
+import {
+  FilterItem,
+  RestaurantType,
+  FilterItemType,
+  RestaurantItem,
+} from "../../components";
+import { RestaurantNavProps } from "../../navigators";
+import { styles } from "./styles";
+import { getRestaurants, getTags } from "../../utilities";
 
-export const Home = ({navigation, route}: RestaurantNavProps<'Home'>) => {
+export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
   const tags: Array<FilterItemType> = getTags();
+  const restaurants: Array<RestaurantType> = getRestaurants();
   // Functionality
   useEffect(() => {}, []);
 
@@ -17,13 +22,14 @@ export const Home = ({navigation, route}: RestaurantNavProps<'Home'>) => {
       <FlatList
         contentContainerStyle={styles.listContentContainer}
         horizontal={true}
+        showsHorizontalScrollIndicator={false}
         data={tags}
         renderItem={renderFilterItem}
       />
     );
   };
 
-  const renderFilterItem = ({item}) => {
+  const renderFilterItem = ({ item }) => {
     return (
       <View style={styles.itemContainer}>
         <FilterItem name={item.name} image={item.image} />
@@ -31,5 +37,32 @@ export const Home = ({navigation, route}: RestaurantNavProps<'Home'>) => {
     );
   };
 
-  return <View style={styles.container}>{renderFilterList()}</View>;
+  const renderRestaurantList = () => {
+    return (
+      <FlatList
+        data={restaurants}
+        renderItem={renderRestaurantItem}
+        ListHeaderComponent={renderListHeader}
+      />
+    );
+  };
+
+  const renderListHeader = () => {
+    return <Text style={styles.restaurantHeader}>Restaurants</Text>;
+  };
+
+  const renderRestaurantItem = ({ item }) => {
+    return (
+      <View style={styles.restaurantItem}>
+        <RestaurantItem logo={item.logo} name={item.name} tags={item.tags} />
+      </View>
+    );
+  };
+
+  return (
+    <ScrollView style={styles.container}>
+      {renderFilterList()}
+      {renderRestaurantList()}
+    </ScrollView>
+  );
 };
