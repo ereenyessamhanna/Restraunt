@@ -1,12 +1,18 @@
 import React, { useEffect } from "react";
-import { FlatList, ScrollView, Text, View } from "react-native";
+import {
+  FlatList,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {
   FilterItem,
   RestaurantType,
   FilterItemType,
   RestaurantItem,
 } from "../../components";
-import { RestaurantNavProps } from "../../navigators";
+import { navigate, RestaurantNavProps } from "../../navigators";
 import { styles } from "./styles";
 import { getRestaurants, getTags } from "../../utilities";
 
@@ -16,6 +22,10 @@ export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
   // Functionality
   useEffect(() => {}, []);
 
+  const navigateToDetails = (restaurant: RestaurantType) => {
+    navigate('Restaurant',restaurant)
+  }
+  
   //UI
   const renderFilterList = () => {
     return (
@@ -53,9 +63,11 @@ export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
 
   const renderRestaurantItem = ({ item }) => {
     return (
-      <View style={styles.restaurantItem}>
-        <RestaurantItem logo={item.logo} name={item.name} tags={item.tags} />
-      </View>
+      <TouchableOpacity onPress={()=> navigateToDetails(item)}>
+        <View style={styles.restaurantItem}>
+          <RestaurantItem logo={item.logo} name={item.name} tags={item.tags} />
+        </View>
+      </TouchableOpacity>
     );
   };
 

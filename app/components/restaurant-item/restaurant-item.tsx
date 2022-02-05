@@ -18,6 +18,7 @@ export type RestaurantType = {
   description?: string;
   tags: Array<FilterItemType>;
   branches?: Array<BranchType>;
+  items?: Array<ItemType>
 };
 
 export const RestaurantItem: React.FC<RestaurantType> = ({
