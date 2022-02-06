@@ -11,31 +11,60 @@ import {
   RestaurantType,
   FilterItemType,
   RestaurantItem,
+  Search,
 } from "../../components";
 import { navigate, RestaurantNavProps } from "../../navigators";
 import { styles } from "./styles";
-import { getRestaurants, getTags, getRestaurantsByFilter } from "../../utilities";
+import {
+  getRestaurants,
+  getTags,
+  getRestaurantsByFilter,
+  searchByRestaurantName,
+} from "../../utilities";
 
 export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
   const tags: Array<FilterItemType> = getTags();
   const restaurants: Array<RestaurantType> = getRestaurants();
-  const [filteredResturants, setFilteredResturants] = useState(restaurants)
+  const [filteredResturants, setFilteredResturants] = useState(restaurants);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Functionality
   useEffect(() => {}, []);
 
   const selectFilter = (item: FilterItemType, index: number) => {
-    const filteredResturant = getRestaurantsByFilter(item,restaurants);
+    const filteredResturant = getRestaurantsByFilter(item, restaurants);
     setSelectedIndex(index);
-    setFilteredResturants(filteredResturant)
+    setFilteredResturants(filteredResturant);
+    setSearchTerm("");
   };
 
   const navigateToDetails = (restaurant: RestaurantType) => {
     navigate("Restaurant", restaurant);
   };
 
+  const searchBySearchTerm = (searchTerm: string) => {
+    setSelectedIndex(-1);
+    setSearchTerm(searchTerm);
+    if (searchTerm == "") {
+      setFilteredResturants(restaurants);
+    } else {
+      const searchedResturant = searchByRestaurantName(searchTerm);
+      setFilteredResturants(searchedResturant);
+    }
+  };
+
   //UI
+
+  const renderSearch = () => {
+    return (
+      <Search
+        searchTerm={searchTerm}
+        onChangeText={(newSearchTerm) => searchBySearchTerm(newSearchTerm)}
+      />
+    );
+  };
+
   const renderFilterList = () => {
     return (
       <FlatList
@@ -48,12 +77,14 @@ export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
     );
   };
 
-  const renderFilterItem = ({ item , index}) => {
+  const renderFilterItem = ({ item, index }) => {
     return (
-      <TouchableOpacity onPress={()=> selectFilter(item,index)}>
+      <TouchableOpacity onPress={() => selectFilter(item, index)}>
         <View style={styles.itemContainer}>
           <FilterItem name={item.name} image={item.image} />
-          {selectedIndex == index && <View style={styles.selectedFilter}></View>}
+          {selectedIndex == index && (
+            <View style={styles.selectedFilter}></View>
+          )}
         </View>
       </TouchableOpacity>
     );
@@ -85,6 +116,7 @@ export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
 
   return (
     <ScrollView style={styles.container}>
+      {renderSearch()}
       {renderFilterList()}
       {renderRestaurantList()}
     </ScrollView>

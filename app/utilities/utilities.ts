@@ -6,7 +6,7 @@ export const getTags = (): Array<FilterItemType> => {
     brands.forEach(element => {
         tags = tags.concat(element.tags)
     });
-    return [...new Map(tags.map(element => [element.name, element])).values()]
+    return [...new Map(tags.map(element => [element.name, element])).values()];
 }
 
 export const getRestaurants = (): Array<RestaurantType> => {
@@ -23,5 +23,16 @@ export const getRestaurantsByFilter = (tag: FilterItemType, restaurants: Array<R
             }
         });
     });
-    return filteredRestaurant
+    return filteredRestaurant;
+}
+
+export const searchByRestaurantName = (searchTerm: string): Array<RestaurantType> => {
+    var restaurants: Array<RestaurantType> = brands;
+    var searchedRestaurant: Array<RestaurantType> = []
+    restaurants.forEach(restaurant => {
+        if (restaurant.name.includes(searchTerm)) {
+            searchedRestaurant.push(restaurant)
+        }
+    })
+    return searchedRestaurant;
 }
