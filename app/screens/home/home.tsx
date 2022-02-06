@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   ScrollView,
@@ -14,18 +14,27 @@ import {
 } from "../../components";
 import { navigate, RestaurantNavProps } from "../../navigators";
 import { styles } from "./styles";
-import { getRestaurants, getTags } from "../../utilities";
+import { getRestaurants, getTags, getRestaurantsByFilter } from "../../utilities";
 
 export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
   const tags: Array<FilterItemType> = getTags();
   const restaurants: Array<RestaurantType> = getRestaurants();
+  const [filteredResturants, setFilteredResturants] = useState(restaurants)
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
   // Functionality
   useEffect(() => {}, []);
 
+  const selectFilter = (item: FilterItemType, index: number) => {
+    const filteredResturant = getRestaurantsByFilter(item,restaurants);
+    setSelectedIndex(index);
+    setFilteredResturants(filteredResturant)
+  };
+
   const navigateToDetails = (restaurant: RestaurantType) => {
-    navigate('Restaurant',restaurant)
-  }
-  
+    navigate("Restaurant", restaurant);
+  };
+
   //UI
   const renderFilterList = () => {
     return (
@@ -39,18 +48,21 @@ export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
     );
   };
 
-  const renderFilterItem = ({ item }) => {
+  const renderFilterItem = ({ item , index}) => {
     return (
-      <View style={styles.itemContainer}>
-        <FilterItem name={item.name} image={item.image} />
-      </View>
+      <TouchableOpacity onPress={()=> selectFilter(item,index)}>
+        <View style={styles.itemContainer}>
+          <FilterItem name={item.name} image={item.image} />
+          {selectedIndex == index && <View style={styles.selectedFilter}></View>}
+        </View>
+      </TouchableOpacity>
     );
   };
 
   const renderRestaurantList = () => {
     return (
       <FlatList
-        data={restaurants}
+        data={filteredResturants}
         renderItem={renderRestaurantItem}
         ListHeaderComponent={renderListHeader}
       />
@@ -63,7 +75,7 @@ export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
 
   const renderRestaurantItem = ({ item }) => {
     return (
-      <TouchableOpacity onPress={()=> navigateToDetails(item)}>
+      <TouchableOpacity onPress={() => navigateToDetails(item)}>
         <View style={styles.restaurantItem}>
           <RestaurantItem logo={item.logo} name={item.name} tags={item.tags} />
         </View>

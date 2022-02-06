@@ -32,4 +32,9 @@ export const styles = StyleSheet.create({
         borderRadius: 10
     },
 
+    selectedFilter: {
+        borderBottomWidth:4,
+        borderColor: palette.yellow
+    },
+
 });

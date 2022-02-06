@@ -10,6 +10,18 @@ export const getTags = (): Array<FilterItemType> => {
 }
 
 export const getRestaurants = (): Array<RestaurantType> => {
-    var restaurant : Array<RestaurantType> = brands;
+    var restaurant: Array<RestaurantType> = brands;
     return restaurant;
+}
+
+export const getRestaurantsByFilter = (tag: FilterItemType, restaurants: Array<RestaurantType>): Array<RestaurantType> => {
+    var filteredRestaurant: Array<RestaurantType> = []
+    restaurants.forEach(restaurant => {
+        restaurant.tags.forEach(restaurantTag => {
+            if (tag.name == restaurantTag.name) {
+                filteredRestaurant.push(restaurant)
+            }
+        });
+    });
+    return filteredRestaurant
 }
