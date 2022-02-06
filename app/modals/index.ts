@@ -1,0 +1,1 @@
+export { AddNewRestaurant } from './add-new-restaurant/add-new-restaurant';

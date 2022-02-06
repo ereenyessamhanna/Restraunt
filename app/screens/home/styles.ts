@@ -37,4 +37,23 @@ export const styles = StyleSheet.create({
         borderColor: palette.yellow
     },
 
+    addRestaurantContainer: {
+        position:'absolute',
+        bottom:0,
+        alignSelf:'center',
+        width: 200,
+        alignItems:'center',
+        justifyContent:'center',
+        height:40,
+        borderRadius:20,
+        zIndex:1,
+        backgroundColor: palette.yellow,
+    },
+
+    addRestaurant: {
+        color: palette.darkGreen,
+        fontWeight:'700',
+        fontSize:10,
+    }
+
 });

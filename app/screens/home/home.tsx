@@ -21,6 +21,8 @@ import {
   getRestaurantsByFilter,
   searchByRestaurantName,
 } from "../../utilities";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { AddNewRestaurant } from "../../modals";
 
 export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
   const tags: Array<FilterItemType> = getTags();
@@ -28,6 +30,7 @@ export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
   const [filteredResturants, setFilteredResturants] = useState(restaurants);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isAddModal, setIsAddModal] = useState(false);
 
   // Functionality
   useEffect(() => {}, []);
@@ -114,11 +117,31 @@ export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
     );
   };
 
+  const renderAddNewRestaurantButton = () => {
+    return (
+      <TouchableOpacity onPress={() => setIsAddModal(true)}>
+        <View style={styles.addRestaurantContainer}>
+          <Text style={styles.addRestaurant}>{"ADD NEW RESTAURANT"}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderAddNewRestaurantModal = () => {
+    if (isAddModal) {
+      return <AddNewRestaurant onCloseModal ={()=> setIsAddModal(false)} />
+    }
+  };
+
   return (
-    <ScrollView style={styles.container}>
-      {renderSearch()}
-      {renderFilterList()}
-      {renderRestaurantList()}
-    </ScrollView>
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <ScrollView style={styles.container}>
+        {renderSearch()}
+        {renderFilterList()}
+        {renderRestaurantList()}
+      </ScrollView>
+      {renderAddNewRestaurantModal()}
+      {renderAddNewRestaurantButton()}
+    </SafeAreaView>
   );
 };
