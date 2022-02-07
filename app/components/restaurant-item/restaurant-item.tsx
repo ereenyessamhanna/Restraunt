@@ -14,11 +14,11 @@ export type ItemType = {
 
 export type RestaurantType = {
   name: string;
-  logo: string;
+  logo?: string;
   description?: string;
   tags: Array<FilterItemType>;
   branches?: Array<BranchType>;
-  items?: Array<ItemType>
+  items?: Array<ItemType>;
 };
 
 export const RestaurantItem: React.FC<RestaurantType> = ({
@@ -36,7 +36,11 @@ export const RestaurantItem: React.FC<RestaurantType> = ({
   };
 
   const renderTags = () => {
-    return <Text style={styles.tags} >{tags.map((tag) => `${tag.name}`).join(", ")}</Text>;
+    return (
+      <Text style={styles.tags}>
+        {tags.map((tag) => `${tag.name}`).join(", ")}
+      </Text>
+    );
   };
 
   return (

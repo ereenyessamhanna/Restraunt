@@ -3,7 +3,7 @@ import {Image, Text, View} from 'react-native';
 import {styles} from './styles';
 
 export type FilterItemType = {
-  image: string;
+  image?: string;
   name: string;
 }
 

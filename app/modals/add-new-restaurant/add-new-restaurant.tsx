@@ -4,20 +4,34 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import { Input } from "../../components";
 import { palette } from "../../theme";
 import { styles } from "./styles";
-
+import { addRestaurant, getAddedTagsWithImages } from "../../utilities";
+import { ApplicationState } from "../../redux/reducers";
+import { useSelector } from "react-redux";
 interface AddNewRestaurantProps {
   onCloseModal: () => void;
 }
 
-export const AddNewRestaurant: React.FC<AddNewRestaurantProps> = ({ onCloseModal }) => {
-
+export const AddNewRestaurant: React.FC<AddNewRestaurantProps> = ({
+  onCloseModal,
+}) => {
   const [name, setName] = useState("");
-  const [tags, setTags] = useState("");
+  const [tag, setTag] = useState("");
+  const { tags } = useSelector(
+    (state: ApplicationState) => state.restaurantState
+  );
 
   //Functionality
   const closeModal = () => {
-    onCloseModal()
+    onCloseModal();
   };
+
+  const addNewRestaurant = () => {
+    const splittedTagArray = tag.split(",");
+    const tagArray = getAddedTagsWithImages(splittedTagArray,tags)
+    addRestaurant(name, tagArray);
+    closeModal();
+  };
+
   //UI
   const renderCloseIcon = () => {
     return (
@@ -45,16 +59,16 @@ export const AddNewRestaurant: React.FC<AddNewRestaurantProps> = ({ onCloseModal
   const renderTagsInput = () => {
     return (
       <Input
-        value={tags}
+        value={tag}
         placeHolder={"tags"}
-        onChangeText={(newValue) => setTags(newValue)}
+        onChangeText={(newValue) => setTag(newValue)}
       ></Input>
     );
   };
 
   const renderAddNewRestaurantButton = () => {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => addNewRestaurant()}>
         <View style={styles.addRestaurantContainer}>
           <Text style={styles.addRestaurant}>{"Add"}</Text>
         </View>

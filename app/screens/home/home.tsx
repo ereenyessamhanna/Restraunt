@@ -23,22 +23,26 @@ import {
 } from "../../utilities";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AddNewRestaurant } from "../../modals";
+import { useSelector } from "react-redux";
+import { ApplicationState } from "../../redux/reducers";
 
 export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
-  const tags: Array<FilterItemType> = getTags();
-  const restaurants: Array<RestaurantType> = getRestaurants();
-  const [filteredResturants, setFilteredResturants] = useState(restaurants);
+  const { restaurants, filteredRestaurants , tags} = useSelector(
+    (state: ApplicationState) => state.restaurantState
+  );
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddModal, setIsAddModal] = useState(false);
 
   // Functionality
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getTags();
+    getRestaurants();
+  }, []);
 
   const selectFilter = (item: FilterItemType, index: number) => {
-    const filteredResturant = getRestaurantsByFilter(item, restaurants);
+    getRestaurantsByFilter(item, restaurants);
     setSelectedIndex(index);
-    setFilteredResturants(filteredResturant);
     setSearchTerm("");
   };
 
@@ -49,12 +53,7 @@ export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
   const searchBySearchTerm = (searchTerm: string) => {
     setSelectedIndex(-1);
     setSearchTerm(searchTerm);
-    if (searchTerm == "") {
-      setFilteredResturants(restaurants);
-    } else {
-      const searchedResturant = searchByRestaurantName(searchTerm);
-      setFilteredResturants(searchedResturant);
-    }
+    searchByRestaurantName(searchTerm, restaurants);
   };
 
   //UI
@@ -94,13 +93,15 @@ export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
   };
 
   const renderRestaurantList = () => {
-    return (
-      <FlatList
-        data={filteredResturants}
-        renderItem={renderRestaurantItem}
-        ListHeaderComponent={renderListHeader}
-      />
-    );
+    if (filteredRestaurants) {
+      return (
+        <FlatList
+          data={filteredRestaurants}
+          renderItem={renderRestaurantItem}
+          ListHeaderComponent={renderListHeader}
+        />
+      );
+    }
   };
 
   const renderListHeader = () => {
@@ -129,7 +130,7 @@ export const Home = ({ navigation, route }: RestaurantNavProps<"Home">) => {
 
   const renderAddNewRestaurantModal = () => {
     if (isAddModal) {
-      return <AddNewRestaurant onCloseModal ={()=> setIsAddModal(false)} />
+      return <AddNewRestaurant onCloseModal={() => setIsAddModal(false)} />;
     }
   };
 
